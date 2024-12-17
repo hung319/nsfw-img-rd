@@ -22,6 +22,7 @@
         #status {
             margin-top: 20px;
             font-style: italic;
+            color: red;
         }
     </style>
 </head>
@@ -50,18 +51,19 @@
         };
 
         const fetchWithRetry = async (url, options, retries = 3) => {
-            try {
-                const response = await fetch(url, options);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+            for (let i = 0; i <= retries; i++) {
+                try {
+                    const response = await fetch(url, options);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response;
+                } catch (error) {
+                    if (i === retries) {
+                        throw error;
+                    }
+                    console.log(`Retry attempt ${i + 1}...`);
                 }
-                return response;
-            } catch (error) {
-                if (retries > 0) {
-                    console.log(`Retry attempt ${4 - retries}...`);
-                    return fetchWithRetry(url, options, retries - 1);
-                }
-                throw error;
             }
         };
 
@@ -84,29 +86,19 @@
         const downloadImages = async (count) => {
             const zip = new JSZip();
             let completed = 0;
-            const promises = [];
 
             for (let i = 0; i < count; i++) {
-                if (promises.length >= CONCURRENT_LIMIT) {
-                    await Promise.all(promises);
-                    promises.length = 0;
-                }
-
-                const imagePromise = fetchImage().then(result => {
-                    if (result && result.imageBlob) {
-                        zip.file(result.fileName, result.imageBlob);
-                        completed++;
-                        status.textContent = `Đã tải ${completed}/${count} ảnh`;
-                    }
-                }).catch(error => {
+                try {
+                    const result = await fetchImage();
+                    zip.file(result.fileName, result.imageBlob);
+                    completed++;
+                    status.textContent = `Đã tải ${completed}/${count} ảnh`;
+                } catch (error) {
                     console.error('Lỗi khi tải ảnh:', error);
                     status.textContent = `Lỗi khi tải ảnh ${i + 1}. Đang tiếp tục...`;
-                });
-
-                promises.push(imagePromise);
+                }
             }
 
-            await Promise.all(promises);
             return zip.generateAsync({ type: 'blob' });
         };
 
@@ -116,10 +108,8 @@
 
             try {
                 const zipBlob = await downloadImages(imagesToDownload);
-
                 const randomZipName = generateRandomString(10) + '.zip';
                 saveAs(zipBlob, randomZipName);
-
                 status.textContent = `Đã tải xong! Kiểm tra file ZIP (${randomZipName}) của bạn.`;
             } catch (error) {
                 status.textContent = 'Đã xảy ra lỗi khi tải ảnh. Vui lòng thử lại sau.';
