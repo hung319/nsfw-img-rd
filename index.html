@@ -22,14 +22,13 @@
         #status {
             margin-top: 20px;
             font-style: italic;
-            color: red;
         }
     </style>
 </head>
 <body>
     <h1>Tải ảnh NSFW</h1>
     <label for="imageCount">Số lượng ảnh tải xuống:</label>
-    <input type="number" id="imageCount" value="5" min="1" max="100">
+    <input type="number" id="imageCount" value="50" min="1" max="100">
     <button id="downloadBtn">Tải ảnh và nén ZIP</button>
     <div id="status"></div>
 
@@ -37,7 +36,7 @@
         const downloadBtn = document.getElementById('downloadBtn');
         const status = document.getElementById('status');
         const imageCountInput = document.getElementById('imageCount');
-        const CONCURRENT_LIMIT = 50;
+        const CONCURRENT_LIMIT = 1000;
         const API_URL = 'https://waifu.pics/api/nsfw/waifu';
         const WORKER_URL = 'https://white-mud-f95d.hoangxg4.workers.dev/?apiUrl=';
 
@@ -51,19 +50,18 @@
         };
 
         const fetchWithRetry = async (url, options, retries = 3) => {
-            for (let i = 0; i <= retries; i++) {
-                try {
-                    const response = await fetch(url, options);
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    return response;
-                } catch (error) {
-                    if (i === retries) {
-                        throw error;
-                    }
-                    console.log(`Retry attempt ${i + 1}...`);
+            try {
+                const response = await fetch(url, options);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
+                return response;
+            } catch (error) {
+                if (retries > 0) {
+                    console.log(`Retry attempt ${4 - retries}...`);
+                    return fetchWithRetry(url, options, retries - 1);
+                }
+                throw error;
             }
         };
 
@@ -86,19 +84,29 @@
         const downloadImages = async (count) => {
             const zip = new JSZip();
             let completed = 0;
+            const promises = [];
 
             for (let i = 0; i < count; i++) {
-                try {
-                    const result = await fetchImage();
-                    zip.file(result.fileName, result.imageBlob);
-                    completed++;
-                    status.textContent = `Đã tải ${completed}/${count} ảnh`;
-                } catch (error) {
+                if (promises.length >= CONCURRENT_LIMIT) {
+                    await Promise.all(promises);
+                    promises.length = 0;
+                }
+
+                const imagePromise = fetchImage().then(result => {
+                    if (result && result.imageBlob) {
+                        zip.file(result.fileName, result.imageBlob);
+                        completed++;
+                        status.textContent = `Đã tải ${completed}/${count} ảnh`;
+                    }
+                }).catch(error => {
                     console.error('Lỗi khi tải ảnh:', error);
                     status.textContent = `Lỗi khi tải ảnh ${i + 1}. Đang tiếp tục...`;
-                }
+                });
+
+                promises.push(imagePromise);
             }
 
+            await Promise.all(promises);
             return zip.generateAsync({ type: 'blob' });
         };
 
@@ -108,8 +116,10 @@
 
             try {
                 const zipBlob = await downloadImages(imagesToDownload);
+
                 const randomZipName = generateRandomString(10) + '.zip';
                 saveAs(zipBlob, randomZipName);
+
                 status.textContent = `Đã tải xong! Kiểm tra file ZIP (${randomZipName}) của bạn.`;
             } catch (error) {
                 status.textContent = 'Đã xảy ra lỗi khi tải ảnh. Vui lòng thử lại sau.';
