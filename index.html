@@ -12,7 +12,6 @@
             --hover-color: #1557b0;
             --background-color: #f0f8ff;
             --card-background: white;
-            --text-color: #333;
         }
 
         * {
@@ -24,58 +23,74 @@
         body {
             font-family: 'Segoe UI', Arial, sans-serif;
             background-color: var(--background-color);
-            color: var(--text-color);
-            min-height: 100vh;
+            color: #333;
+            line-height: 1.6;
+            padding-top: 20px;
+        }
+
+        .top-info {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
-            padding: 20px;
+            font-size: 0.9em;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .container {
-            background-color: var(--card-background);
             max-width: 800px;
-            width: 100%;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-            text-align: center;
+            margin: 60px auto 20px;
+            padding: 20px;
+        }
+
+        .download-card {
+            background-color: var(--card-background);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin: 20px auto;
             transition: transform 0.3s ease;
         }
 
-        .container:hover {
+        .download-card:hover {
             transform: translateY(-5px);
         }
 
         h1 {
             color: var(--primary-color);
-            font-size: 2.5em;
             margin-bottom: 30px;
+            font-size: 2.2em;
+            text-align: center;
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
         }
 
         .input-group {
-            margin: 30px 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
+            margin: 20px 0;
+            text-align: center;
         }
 
         label {
-            font-size: 1.1em;
-            color: var(--text-color);
             font-weight: 500;
+            color: #444;
+            display: block;
+            margin-bottom: 10px;
         }
 
         input[type="number"] {
-            width: 200px;
-            padding: 12px 20px;
             font-size: 16px;
+            padding: 12px 20px;
             border: 2px solid #ddd;
-            border-radius: 10px;
-            text-align: center;
+            border-radius: 8px;
+            width: 150px;
             transition: all 0.3s ease;
+            text-align: center;
         }
 
         input[type="number"]:focus {
@@ -88,81 +103,58 @@
             background-color: var(--primary-color);
             color: white;
             border: none;
-            border-radius: 10px;
-            padding: 15px 30px;
+            border-radius: 8px;
+            padding: 12px 30px;
             font-size: 16px;
             font-weight: 500;
             cursor: pointer;
             transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            margin: 0 auto;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            display: block;
+            margin: 20px auto;
+            min-width: 200px;
         }
 
         button:hover {
             background-color: var(--hover-color);
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(26, 115, 232, 0.3);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        button:active {
+            transform: translateY(0);
         }
 
         button:disabled {
-            background-color: #ccc;
+            background-color: #cccccc;
             cursor: not-allowed;
             transform: none;
         }
 
         #status {
-            margin-top: 25px;
+            margin-top: 20px;
             padding: 15px;
-            border-radius: 10px;
+            border-radius: 8px;
             background-color: rgba(26, 115, 232, 0.1);
             color: var(--primary-color);
             font-weight: 500;
+            text-align: center;
             animation: fadeIn 0.5s ease;
-            min-height: 50px;
         }
 
-        .progress-bar {
-            width: 100%;
-            height: 6px;
-            background-color: #eee;
-            border-radius: 3px;
-            margin-top: 20px;
-            overflow: hidden;
+        .loading {
             display: none;
-        }
-
-        .progress-bar.active {
-            display: block;
-        }
-
-        .progress-bar-fill {
-            height: 100%;
-            background-color: var(--primary-color);
-            width: 0%;
-            transition: width 0.3s ease;
-        }
-
-        .loading-spinner {
-            display: none;
-            width: 24px;
-            height: 24px;
-            border: 3px solid #ffffff;
+            margin: 20px auto;
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--primary-color);
             border-radius: 50%;
-            border-top-color: transparent;
             animation: spin 1s linear infinite;
         }
 
-        .loading-spinner.active {
-            display: inline-block;
-        }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
+        .loading.active {
+            display: block;
         }
 
         @keyframes fadeIn {
@@ -176,60 +168,63 @@
             }
         }
 
-        @media (max-width: 600px) {
-            .container {
-                padding: 20px;
-            }
-
-            h1 {
-                font-size: 2em;
-            }
-
-            input[type="number"] {
-                width: 150px;
-            }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
+    <div class="top-info">
+        <div class="datetime">Current Date and Time (UTC): <span id="currentDateTime">2024-12-18 03:33:18</span></div>
+        <div class="user">Current User's Login: <span id="userLogin">thainguyen06</span></div>
+    </div>
+
     <div class="container">
-        <h1>Tải ảnh NSFW</h1>
-        <div class="input-group">
-            <label for="imageCount">Số lượng ảnh tải xuống:</label>
-            <input type="number" id="imageCount" value="50" min="1" max="100">
+        <div class="download-card">
+            <h1>Tải ảnh NSFW</h1>
+            <div class="input-group">
+                <label for="imageCount">Số lượng ảnh tải xuống:</label>
+                <input type="number" id="imageCount" value="50" min="1" max="100">
+            </div>
+            <button id="downloadBtn">Tải ảnh và nén ZIP</button>
+            <div class="loading" id="loadingAnimation"></div>
+            <div id="status"></div>
         </div>
-        <button id="downloadBtn">
-            <span class="button-text">Tải ảnh và nén ZIP</span>
-            <div class="loading-spinner"></div>
-        </button>
-        <div class="progress-bar">
-            <div class="progress-bar-fill"></div>
-        </div>
-        <div id="status"></div>
     </div>
 
     <script>
+        // Cập nhật datetime
+        function updateDateTime() {
+            const now = new Date();
+            const dateTimeString = now.toISOString().replace('T', ' ').substring(0, 19);
+            document.getElementById('currentDateTime').textContent = dateTimeString;
+        }
+        setInterval(updateDateTime, 1000);
+
         const downloadBtn = document.getElementById('downloadBtn');
         const status = document.getElementById('status');
         const imageCountInput = document.getElementById('imageCount');
-        const progressBar = document.querySelector('.progress-bar');
-        const progressBarFill = document.querySelector('.progress-bar-fill');
-        const loadingSpinner = document.querySelector('.loading-spinner');
-        const buttonText = document.querySelector('.button-text');
-
+        const loadingAnimation = document.getElementById('loadingAnimation');
         const CONCURRENT_LIMIT = 1000;
         const API_URL = 'https://waifu.pics/api/nsfw/waifu';
         const WORKER_URL = 'https://white-mud-f95d.hoangxg4.workers.dev/?apiUrl=';
 
         const generateRandomString = (length) => {
             const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-            return Array.from({length}, () => characters.charAt(Math.floor(Math.random() * characters.length))).join('');
+            let result = '';
+            for (let i = 0; i < length; i++) {
+                result += characters.charAt(Math.floor(Math.random() * characters.length));
+            }
+            return result;
         };
 
         const fetchWithRetry = async (url, options, retries = 3) => {
             try {
                 const response = await fetch(url, options);
-                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
                 return response;
             } catch (error) {
                 if (retries > 0) {
@@ -244,19 +239,15 @@
             try {
                 const response = await fetchWithRetry(`${WORKER_URL}${encodeURIComponent(API_URL)}`);
                 const data = await response.json();
-                const imageResponse = await fetchWithRetry(`${WORKER_URL}${encodeURIComponent(data.url)}`);
+                const imageUrl = data.url;
+                const imageResponse = await fetchWithRetry(`${WORKER_URL}${encodeURIComponent(imageUrl)}`);
                 const imageBlob = await imageResponse.blob();
-                return { imageBlob, fileName: data.url.split('/').pop() };
+                const fileName = imageUrl.split('/').pop();
+                return { imageBlob, fileName };
             } catch (error) {
                 console.error('Lỗi khi tải ảnh:', error);
                 throw error;
             }
-        };
-
-        const updateProgress = (completed, total) => {
-            const progress = (completed / total) * 100;
-            progressBarFill.style.width = `${progress}%`;
-            status.textContent = `Đã tải ${completed}/${total} ảnh`;
         };
 
         const downloadImages = async (count) => {
@@ -264,26 +255,22 @@
             let completed = 0;
             const promises = [];
 
-            progressBar.classList.add('active');
-            updateProgress(0, count);
-
             for (let i = 0; i < count; i++) {
                 if (promises.length >= CONCURRENT_LIMIT) {
                     await Promise.all(promises);
                     promises.length = 0;
                 }
 
-                const imagePromise = fetchImage()
-                    .then(result => {
-                        if (result && result.imageBlob) {
-                            zip.file(result.fileName, result.imageBlob);
-                            completed++;
-                            updateProgress(completed, count);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Lỗi khi tải ảnh:', error);
-                    });
+                const imagePromise = fetchImage().then(result => {
+                    if (result && result.imageBlob) {
+                        zip.file(result.fileName, result.imageBlob);
+                        completed++;
+                        status.textContent = `Đã tải ${completed}/${count} ảnh`;
+                    }
+                }).catch(error => {
+                    console.error('Lỗi khi tải ảnh:', error);
+                    status.textContent = `Lỗi khi tải ảnh ${i + 1}. Đang tiếp tục...`;
+                });
 
                 promises.push(imagePromise);
             }
@@ -294,12 +281,9 @@
 
         downloadBtn.addEventListener('click', async () => {
             const imagesToDownload = parseInt(imageCountInput.value) || 5;
-            
-            // UI updates for starting download
             downloadBtn.disabled = true;
-            loadingSpinner.classList.add('active');
-            buttonText.style.opacity = '0.7';
-            status.textContent = 'Đang bắt đầu tải ảnh...';
+            loadingAnimation.classList.add('active');
+            status.textContent = 'Đang tải ảnh...';
 
             try {
                 const zipBlob = await downloadImages(imagesToDownload);
@@ -310,14 +294,8 @@
                 status.textContent = 'Đã xảy ra lỗi khi tải ảnh. Vui lòng thử lại sau.';
                 console.error('Lỗi:', error);
             } finally {
-                // Reset UI
                 downloadBtn.disabled = false;
-                loadingSpinner.classList.remove('active');
-                buttonText.style.opacity = '1';
-                setTimeout(() => {
-                    progressBar.classList.remove('active');
-                    progressBarFill.style.width = '0%';
-                }, 1500);
+                loadingAnimation.classList.remove('active');
             }
         });
     </script>
