@@ -104,32 +104,39 @@
             let completed = 0;
             const promises = [];
 
-            for (let i = 0; i < count; i++) {
-                if (promises.length >= CONCURRENT_LIMIT) {
-                    await Promise.all(promises);
-                    promises.length = 0;
+            const downloadBatch = async (batchCount) => {
+                for (let i = 0; i < batchCount; i++) {
+                    if (promises.length >= CONCURRENT_LIMIT) {
+                        await Promise.all(promises);
+                        promises.length = 0;
+                    }
+
+                    const imagePromise = fetchImage().then(result => {
+                        if (result && result.imageBlob) {
+                            zip.file(result.fileName, result.imageBlob);
+                            completed++;
+                            status.textContent = `Đã tải ${completed}/${count} ảnh`;
+                            progressBar.style.width = `${(completed / count) * 100}%`;
+                            progressBar.textContent = `${Math.round((completed / count) * 100)}%`;
+                        }
+                    }).catch(error => {
+                        console.error('Lỗi khi tải ảnh:', error);
+                        status.textContent = `Lỗi khi tải ảnh ${i + 1}. Đang tiếp tục...`;
+                    });
+
+                    promises.push(imagePromise);
                 }
 
-                const imagePromise = fetchImage().then(result => {
-                    if (result && result.imageBlob) {
-                        zip.file(result.fileName, result.imageBlob);
-                        completed++;
-                        status.textContent = `Đã tải ${completed}/${count} ảnh`;
-                        progressBar.style.width = `${(completed / count) * 100}%`;
-                        progressBar.textContent = `${Math.round((completed / count) * 100)}%`;
-                    }
-                }).catch(error => {
-                    console.error('Lỗi khi tải ảnh:', error);
-                    status.textContent = `Lỗi khi tải ảnh ${i + 1}. Đang tiếp tục...`;
-                });
+                await Promise.all(promises);
+            };
 
-                promises.push(imagePromise);
-            }
+            // Initial download attempt
+            await downloadBatch(count);
 
-            await Promise.all(promises);
-
-            if (completed < count) {
-                throw new Error(`Chỉ tải được ${completed}/${count} ảnh. Vui lòng thử lại.`);
+            // If not enough images were downloaded, try downloading the remaining ones
+            while (completed < count) {
+                status.textContent = `Tải bổ sung ${count - completed} ảnh còn thiếu...`;
+                await downloadBatch(count - completed);
             }
 
             return zip.generateAsync({ type: 'blob' });
