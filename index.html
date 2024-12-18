@@ -176,8 +176,8 @@
 </head>
 <body>
     <div class="top-info">
-        <div class="datetime">Current Date and Time (UTC): <span id="currentDateTime">2024-12-18 03:33:18</span></div>
-        <div class="user">Current User's Login: <span id="userLogin">hung319</span></div>
+        <div class="datetime">Ngày giờ hiện tại (Hồ Chí Minh): <span id="currentDateTime"></span></div>
+        <div class="user">Người dùng hiện tại: <span id="userLogin">hung319</span></div>
     </div>
 
     <div class="container">
@@ -194,11 +194,22 @@
     </div>
 
     <script>
-        // Cập nhật datetime
+        // Cập nhật datetime theo múi giờ Hồ Chí Minh
         function updateDateTime() {
             const now = new Date();
-            const dateTimeString = now.toISOString().replace('T', ' ').substring(0, 19);
-            document.getElementById('currentDateTime').textContent = dateTimeString;
+            const options = {
+                timeZone: "Asia/Ho_Chi_Minh",
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit",
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+                hour12: false,
+            };
+            const formatter = new Intl.DateTimeFormat("vi-VN", options);
+            const dateTimeString = formatter.format(now).replace(",", ""); // Bỏ dấu phẩy
+            document.getElementById("currentDateTime").textContent = dateTimeString;
         }
         setInterval(updateDateTime, 1000);
 
