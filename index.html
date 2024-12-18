@@ -23,6 +23,20 @@
             margin-top: 20px;
             font-style: italic;
         }
+        #progressBar {
+            width: 100%;
+            background-color: #f3f3f3;
+            border: 1px solid #ccc;
+            margin-top: 20px;
+        }
+        #progress {
+            width: 0;
+            height: 20px;
+            background-color: #4caf50;
+            text-align: center;
+            line-height: 20px;
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -31,11 +45,15 @@
     <input type="number" id="imageCount" value="50" min="1" max="100">
     <button id="downloadBtn">Tải ảnh và nén ZIP</button>
     <div id="status"></div>
+    <div id="progressBar">
+        <div id="progress"></div>
+    </div>
 
     <script>
         const downloadBtn = document.getElementById('downloadBtn');
         const status = document.getElementById('status');
         const imageCountInput = document.getElementById('imageCount');
+        const progressBar = document.getElementById('progress');
         const CONCURRENT_LIMIT = 1000;
         const API_URL = 'https://waifu.pics/api/nsfw/waifu';
         const WORKER_URL = 'https://white-mud-f95d.hoangxg4.workers.dev/?apiUrl=';
@@ -97,6 +115,8 @@
                         zip.file(result.fileName, result.imageBlob);
                         completed++;
                         status.textContent = `Đã tải ${completed}/${count} ảnh`;
+                        progressBar.style.width = `${(completed / count) * 100}%`;
+                        progressBar.textContent = `${Math.round((completed / count) * 100)}%`;
                     }
                 }).catch(error => {
                     console.error('Lỗi khi tải ảnh:', error);
@@ -107,12 +127,19 @@
             }
 
             await Promise.all(promises);
+
+            if (completed < count) {
+                throw new Error(`Chỉ tải được ${completed}/${count} ảnh. Vui lòng thử lại.`);
+            }
+
             return zip.generateAsync({ type: 'blob' });
         };
 
         downloadBtn.addEventListener('click', async () => {
             const imagesToDownload = parseInt(imageCountInput.value) || 5;
             status.textContent = 'Đang tải ảnh...';
+            progressBar.style.width = `0%`;
+            progressBar.textContent = `0%`;
 
             try {
                 const zipBlob = await downloadImages(imagesToDownload);
