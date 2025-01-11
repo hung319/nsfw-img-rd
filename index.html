@@ -172,6 +172,34 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+        .input-group {
+    margin: 20px 0;
+    text-align: center; /* Căn giữa label */
+}
+
+select {
+    font-size: 16px;
+    padding: 12px;
+    border-radius: 8px;
+    border: 2px solid #ddd;
+    background-color: white;
+    width: 200px;  /* Chiều rộng cho select */
+    transition: all 0.3s ease;
+    margin-top: 10px;
+    display: inline-block; /* Giúp select nằm giữa */
+    text-align: center; /* Căn giữa các tên API trong select */
+}
+
+option {
+    text-align: center; /* Căn giữa các tên API trong các option */
+}
+
+        select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.2);
+        }
     </style>
 </head>
 <body>
@@ -187,6 +215,16 @@
                 <label for="imageCount">Số lượng ảnh tải xuống:</label>
                 <input type="number" id="imageCount" value="50" min="1" max="100">
             </div>
+            
+            <div class="input-group">
+                <label for="apiSelector">Chọn API:</label>
+                <select id="apiSelector">
+                    <option value="waifu.pics">Waifu.pics</option>
+                    <option value="konachan">Konachan.net</option>
+                    <option value="yande.re">Yande.re</option>
+                </select>
+            </div>
+
             <button id="downloadBtn">Tải ảnh và nén ZIP</button>
             <div class="loading" id="loadingAnimation"></div>
             <div id="status"></div>
@@ -194,7 +232,6 @@
     </div>
 
     <script>
-        // Cập nhật datetime
         function updateDateTime() {
             const now = new Date();
             const options = { timeZone: "Asia/Ho_Chi_Minh", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false };
@@ -204,9 +241,16 @@
         setInterval(updateDateTime, 1000);
 
         const CONCURRENT_LIMIT = 1000000;
-        const API_URL = 'https://waifu.pics/api/nsfw/waifu';
+
         const WORKER_URL = 'https://white-mud-f95d.hoangxg4.workers.dev/?apiUrl=';
+        const API_URLS = {
+            'waifu.pics': 'https://waifu.pics/api/nsfw/waifu',
+            'konachan': 'https://konachan.net/post.json?tags=order:random+rating:explicit&limit=1',
+            'yande.re': 'https://yande.re/post.json?tags=order:random+rating:explicit&limit=1'
+        };
+
         const generateRandomString = (length) => Array.from({ length }, () => 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'.charAt(Math.floor(Math.random() * 62))).join('');
+
         const fetchWithRetry = async (url, retries = 3) => {
             try {
                 const response = await fetch(url);
@@ -219,11 +263,13 @@
         };
 
         const fetchImage = async (retryCount = 3) => {
+            const selectedApi = document.getElementById('apiSelector').value;
+            const apiUrl = API_URLS[selectedApi];
             try {
-                const response = await fetchWithRetry(`${WORKER_URL}${encodeURIComponent(API_URL)}`);
+                const response = await fetchWithRetry(`${WORKER_URL}${encodeURIComponent(apiUrl)}`);
                 const data = await response.json();
-                const imageUrl = data.url;
-                const imageResponse = await fetchWithRetry(`${WORKER_URL}${encodeURIComponent(imageUrl)}`);
+                const imageUrl = selectedApi === 'waifu.pics' ? data.url : data[0].file_url;
+                const imageResponse = await fetchWithRetry(imageUrl);
                 const imageBlob = await imageResponse.blob();
                 const fileName = imageUrl.split('/').pop();
                 return { imageBlob, fileName };
@@ -262,12 +308,14 @@
             downloadBtn.disabled = true;
             loadingAnimation.classList.add('active');
             status.textContent = 'Đang tải ảnh...';
+
             try {
                 const zipBlob = await downloadImages(imageCount);
-                saveAs(zipBlob, `${generateRandomString(10)}.zip`);
-                status.textContent = 'Đã tải xong!';
+                const fileName = `images-${generateRandomString(6)}.zip`;
+                saveAs(zipBlob, fileName);
+                status.textContent = 'Tải về hoàn tất!';
             } catch (error) {
-                status.textContent = 'Lỗi khi tải ảnh.';
+                status.textContent = 'Lỗi khi tải ảnh!';
             } finally {
                 downloadBtn.disabled = false;
                 loadingAnimation.classList.remove('active');
