@@ -194,59 +194,31 @@
     </div>
 
     <script>
-        // Cập nhật datetime theo múi giờ Hồ Chí Minh
+        // Cập nhật datetime
         function updateDateTime() {
             const now = new Date();
-            const options = {
-                timeZone: "Asia/Ho_Chi_Minh",
-                year: "numeric",
-                month: "2-digit",
-                day: "2-digit",
-                hour: "2-digit",
-                minute: "2-digit",
-                second: "2-digit",
-                hour12: false,
-            };
+            const options = { timeZone: "Asia/Ho_Chi_Minh", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false };
             const formatter = new Intl.DateTimeFormat("vi-VN", options);
-            const dateTimeString = formatter.format(now).replace(",", ""); // Bỏ dấu phẩy
-            document.getElementById("currentDateTime").textContent = dateTimeString;
+            document.getElementById("currentDateTime").textContent = formatter.format(now).replace(",", "");
         }
         setInterval(updateDateTime, 1000);
 
-        const downloadBtn = document.getElementById('downloadBtn');
-        const status = document.getElementById('status');
-        const imageCountInput = document.getElementById('imageCount');
-        const loadingAnimation = document.getElementById('loadingAnimation');
-        const CONCURRENT_LIMIT = 1000;
+        const CONCURRENT_LIMIT = 1000000;
         const API_URL = 'https://waifu.pics/api/nsfw/waifu';
         const WORKER_URL = 'https://white-mud-f95d.hoangxg4.workers.dev/?apiUrl=';
-
-        const generateRandomString = (length) => {
-            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-            let result = '';
-            for (let i = 0; i < length; i++) {
-                result += characters.charAt(Math.floor(Math.random() * characters.length));
-            }
-            return result;
-        };
-
-        const fetchWithRetry = async (url, options, retries = 3) => {
+        const generateRandomString = (length) => Array.from({ length }, () => 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'.charAt(Math.floor(Math.random() * 62))).join('');
+        const fetchWithRetry = async (url, retries = 3) => {
             try {
-                const response = await fetch(url, options);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 return response;
             } catch (error) {
-                if (retries > 0) {
-                    console.log(`Retry attempt ${4 - retries}...`);
-                    return fetchWithRetry(url, options, retries - 1);
-                }
-                throw error;
+                if (retries > 0) return fetchWithRetry(url, retries - 1);
+                return null;
             }
         };
 
-        const fetchImage = async () => {
+        const fetchImage = async (retryCount = 3) => {
             try {
                 const response = await fetchWithRetry(`${WORKER_URL}${encodeURIComponent(API_URL)}`);
                 const data = await response.json();
@@ -256,8 +228,8 @@
                 const fileName = imageUrl.split('/').pop();
                 return { imageBlob, fileName };
             } catch (error) {
-                console.error('Lỗi khi tải ảnh:', error);
-                throw error;
+                if (retryCount > 0) return fetchImage(retryCount - 1);
+                return null;
             }
         };
 
@@ -265,45 +237,37 @@
             const zip = new JSZip();
             let completed = 0;
             const promises = [];
-
             for (let i = 0; i < count; i++) {
                 if (promises.length >= CONCURRENT_LIMIT) {
                     await Promise.all(promises);
                     promises.length = 0;
                 }
-
-                const imagePromise = fetchImage().then(result => {
+                promises.push(fetchImage().then(result => {
                     if (result && result.imageBlob) {
                         zip.file(result.fileName, result.imageBlob);
                         completed++;
-                        status.textContent = `Đã tải ${completed}/${count} ảnh`;
+                        document.getElementById('status').textContent = `Đã tải ${completed}/${count} ảnh`;
                     }
-                }).catch(error => {
-                    console.error('Lỗi khi tải ảnh:', error);
-                    status.textContent = `Lỗi khi tải ảnh ${i + 1}. Đang tiếp tục...`;
-                });
-
-                promises.push(imagePromise);
+                }));
             }
-
             await Promise.all(promises);
             return zip.generateAsync({ type: 'blob' });
         };
 
-        downloadBtn.addEventListener('click', async () => {
-            const imagesToDownload = parseInt(imageCountInput.value) || 5;
+        document.getElementById('downloadBtn').addEventListener('click', async () => {
+            const imageCount = parseInt(document.getElementById('imageCount').value) || 50;
+            const downloadBtn = document.getElementById('downloadBtn');
+            const loadingAnimation = document.getElementById('loadingAnimation');
+            const status = document.getElementById('status');
             downloadBtn.disabled = true;
             loadingAnimation.classList.add('active');
             status.textContent = 'Đang tải ảnh...';
-
             try {
-                const zipBlob = await downloadImages(imagesToDownload);
-                const randomZipName = generateRandomString(10) + '.zip';
-                saveAs(zipBlob, randomZipName);
-                status.textContent = `Đã tải xong! Kiểm tra file ZIP (${randomZipName}) của bạn.`;
+                const zipBlob = await downloadImages(imageCount);
+                saveAs(zipBlob, `${generateRandomString(10)}.zip`);
+                status.textContent = 'Đã tải xong!';
             } catch (error) {
-                status.textContent = 'Đã xảy ra lỗi khi tải ảnh. Vui lòng thử lại sau.';
-                console.error('Lỗi:', error);
+                status.textContent = 'Lỗi khi tải ảnh.';
             } finally {
                 downloadBtn.disabled = false;
                 loadingAnimation.classList.remove('active');
