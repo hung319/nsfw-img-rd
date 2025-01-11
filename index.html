@@ -203,7 +203,7 @@
         }
         setInterval(updateDateTime, 1000);
 
-        const CONCURRENT_LIMIT = 1000000;
+        const CONCURRENT_LIMIT = 1000;
         const API_URL = 'https://waifu.pics/api/nsfw/waifu';
         const WORKER_URL = 'https://white-mud-f95d.hoangxg4.workers.dev/?apiUrl=';
         const generateRandomString = (length) => Array.from({ length }, () => 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'.charAt(Math.floor(Math.random() * 62))).join('');
