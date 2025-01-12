@@ -220,8 +220,10 @@
                 <label for="apiSelector">Chọn API:</label>
                 <select id="apiSelector">
                     <option value="waifu.pics">Waifu.pics</option>
-                    <option value="konachan">Konachan.net</option>
-                    <option value="yande.re">Yande.re</option>
+                    <option value="konachan(questionable)">Konachan.net(questionable)</option>
+                    <option value="konachan(explicit)">Konachan.net(explicit)</option>
+                    <option value="yande.re(questionable)">Yande.re(questionable)</option>
+                    <option value="yande.re(explicit)">Yande.re(explicit)</option>
                 </select>
             </div>
 
@@ -245,8 +247,10 @@
         const PROXY_URL = 'https://proxy.h4rs.io.vn/cors?url=';
         const API_URLS = {
             'waifu.pics': 'https://waifu.pics/api/nsfw/waifu',
-            'konachan': 'https://konachan.net/post.json?tags=order:random+rating:explicit&limit=1',
-            'yande.re': 'https://yande.re/post.json?tags=order:random+rating:explicit&limit=1'
+            'konachan(questionable)': 'https://konachan.net/post.json?tags=order:random+rating:questionable&limit=1',
+            'konachan(explicit)': 'https://konachan.net/post.json?tags=order:random+rating:explicit&limit=1',
+            'yande.re(questionable)': 'https://yande.re/post.json?tags=order:random+rating:questionable&limit=1',
+            'yande.re(explicit)': 'https://yande.re/post.json?tags=order:random+rating:explicit&limit=1'
         };
 
         const generateRandomString = (length) => Array.from({ length }, () => 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'.charAt(Math.floor(Math.random() * 62))).join('');
