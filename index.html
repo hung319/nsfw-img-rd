@@ -213,7 +213,7 @@
             <h1>Tải ảnh NSFW</h1>
             <div class="input-group">
                 <label for="imageCount">Số lượng ảnh tải xuống:</label>
-                <input type="number" id="imageCount" value="50" min="1" max="100">
+                <input type="number" id="imageCount" value="50" min="1">
             </div>
             
             <div class="input-group">
@@ -317,7 +317,7 @@
         };
 
         document.getElementById('downloadBtn').addEventListener('click', async () => {
-            const imageCount = parseInt(document.getElementById('imageCount').value) || 50;
+            const imageCount = Math.max(parseInt(document.getElementById('imageCount').value), 1);
             const downloadBtn = document.getElementById('downloadBtn');
             const loadingAnimation = document.getElementById('loadingAnimation');
             const status = document.getElementById('status');
