@@ -220,7 +220,6 @@
                 <label for="apiSelector">Chọn API:</label>
                 <select id="apiSelector">
                     <option value="waifu.pics">Waifu.pics</option>
-                    <option value="nekosapi.com">Nekosapi.com</option>
                     <option value="konachan(questionable)">Konachan.net(questionable)</option>
                     <option value="konachan(explicit)">Konachan.net(explicit)</option>
                     <option value="yande.re(questionable)">Yande.re(questionable)</option>
@@ -248,7 +247,7 @@
         const PROXY_URL = 'https://proxy.h4rs.io.vn/cors?url=';
         const API_URLS = {
             'waifu.pics': 'https://waifu.pics/api/nsfw/waifu',
-            'nekosapi.com': 'https://api.nekosapi.com/v4/images/random?rating=explicit&limit=1',
+            // 'nekosapi.com': 'https://api.nekosapi.com/v4/images/random?rating=explicit&limit=1',
             'konachan(questionable)': 'https://konachan.net/post.json?tags=order:random+rating:questionable&limit=1',
             'konachan(explicit)': 'https://konachan.net/post.json?tags=order:random+rating:explicit&limit=1',
             'yande.re(questionable)': 'https://yande.re/post.json?tags=order:random+rating:questionable&limit=1',
@@ -278,9 +277,9 @@
         let imageUrl;
         if (selectedApi === 'waifu.pics') {
             imageUrl = data.url;
-        } else if (selectedApi === 'nekosapi.com') {
-            imageUrl = data[0]?.url; // Lấy URL từ phần tử đầu tiên trong mảng
-        } else {
+        } /* else if (selectedApi === 'nekosapi.com') {
+             imageUrl = data[0]?.url; // Lấy URL từ phần tử đầu tiên trong mảng
+        }*/ else {
             imageUrl = data[0]?.file_url;
         }
 
