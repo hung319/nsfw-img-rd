@@ -269,22 +269,32 @@
         };
 
         const fetchImage = async (retryCount = 3) => {
-            const selectedApi = document.getElementById('apiSelector').value;
-            const apiUrl = API_URLS[selectedApi];
-            try {
-                const response = await fetchWithRetry(apiUrl);
-                const data = await response.json();
-                const imageUrl = (selectedApi === 'waifu.pics' || selectedApi === 'nekosapi.com') ? data.url : data[0].file_url;
-                const imageResponse = await fetchWithRetry(imageUrl);
-                const imageBlob = await imageResponse.blob();
-                const fileName = imageUrl.split('/').pop();
-                return { imageBlob, fileName };
-            } catch (error) {
-                if (retryCount > 0) return fetchImage(retryCount - 1);
-                return null;
-            }
-        };
+    const selectedApi = document.getElementById('apiSelector').value;
+    const apiUrl = API_URLS[selectedApi];
+    try {
+        const response = await fetchWithRetry(apiUrl);
+        const data = await response.json();
 
+        let imageUrl;
+        if (selectedApi === 'waifu.pics') {
+            imageUrl = data.url;
+        } else if (selectedApi === 'nekosapi.com') {
+            imageUrl = data[0]?.url; // Lấy URL từ phần tử đầu tiên trong mảng
+        } else {
+            imageUrl = data[0]?.file_url;
+        }
+
+        if (!imageUrl) throw new Error("URL ảnh không xác định!");
+
+        const imageResponse = await fetchWithRetry(imageUrl);
+        const imageBlob = await imageResponse.blob();
+        const fileName = imageUrl.split('/').pop();
+        return { imageBlob, fileName };
+    } catch (error) {
+        if (retryCount > 0) return fetchImage(retryCount - 1);
+        return null;
+    }
+};
         const downloadImages = async (count) => {
             const zip = new JSZip();
             let completed = 0;
