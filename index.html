@@ -267,7 +267,14 @@
             }
         };
 
-        const fetchImage = async (retryCount = 3) => {
+        const convertToStaticallyUrl = (imageUrl) => {
+    const url = new URL(imageUrl);
+    const domain = url.hostname;
+    const path = url.pathname;
+    return `https://cdn.statically.io/img/${domain}/f=auto${path}`;
+};
+
+const fetchImage = async (retryCount = 3) => {
     const selectedApi = document.getElementById('apiSelector').value;
     const apiUrl = API_URLS[selectedApi];
     try {
@@ -285,7 +292,10 @@
 
         if (!imageUrl) throw new Error("URL ảnh không xác định!");
 
-        const imageResponse = await fetchWithRetry(imageUrl);
+        // Chuyển đổi URL ảnh sang sử dụng Statically.io
+        const staticallyImageUrl = convertToStaticallyUrl(imageUrl);
+
+        const imageResponse = await fetchWithRetry(staticallyImageUrl);
         const imageBlob = await imageResponse.blob();
         const fileName = imageUrl.split('/').pop();
         return { imageBlob, fileName };
