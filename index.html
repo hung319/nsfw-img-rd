@@ -28,22 +28,6 @@
             padding-top: 20px;
         }
 
-        .top-info {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 10px;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.9em;
-            z-index: 1000;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
         .container {
             max-width: 800px;
             margin: 60px auto 20px;
@@ -56,19 +40,11 @@
             padding: 30px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             margin: 20px auto;
-            transition: transform 0.3s ease;
-        }
-
-        .download-card:hover {
-            transform: translateY(-5px);
         }
 
         h1 {
             color: var(--primary-color);
-            margin-bottom: 30px;
-            font-size: 2.2em;
             text-align: center;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
         }
 
         .input-group {
@@ -76,70 +52,30 @@
             text-align: center;
         }
 
-        label {
-            font-weight: 500;
-            color: #444;
-            display: block;
-            margin-bottom: 10px;
-        }
-
-        input[type="number"] {
+        input, select, button {
             font-size: 16px;
-            padding: 12px 20px;
-            border: 2px solid #ddd;
+            padding: 12px;
             border-radius: 8px;
-            width: 150px;
-            transition: all 0.3s ease;
+            border: 2px solid #ddd;
+            width: 200px;
+            display: block;
+            margin: 10px auto;
             text-align: center;
-        }
-
-        input[type="number"]:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.2);
         }
 
         button {
             background-color: var(--primary-color);
             color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 12px 30px;
-            font-size: 16px;
-            font-weight: 500;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-            display: block;
-            margin: 20px auto;
-            min-width: 200px;
         }
 
         button:hover {
             background-color: var(--hover-color);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        button:active {
-            transform: translateY(0);
         }
 
         button:disabled {
-            background-color: #cccccc;
+            background-color: #ccc;
             cursor: not-allowed;
-            transform: none;
-        }
-
-        #status {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 8px;
-            background-color: rgba(26, 115, 232, 0.1);
-            color: var(--primary-color);
-            font-weight: 500;
-            text-align: center;
-            animation: fadeIn 0.5s ease;
         }
 
         .loading {
@@ -157,152 +93,92 @@
             display: block;
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-
-        .input-group {
-            margin: 20px 0;
-            text-align: center;
-        }
-
-        select {
-            font-size: 16px;
-            padding: 12px;
-            border-radius: 8px;
-            border: 2px solid #ddd;
-            background-color: white;
-            width: 200px;
-            transition: all 0.3s ease;
-            margin-top: 10px;
-            display: inline-block;
-            text-align: center;
-        }
-
-        option {
-            text-align: center;
-        }
-
-        select:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.2);
-        }
     </style>
 </head>
 <body>
-    <div class="top-info">
-        <div class="datetime">Ngày giờ hiện tại (Hồ Chí Minh): <span id="currentDateTime"></span></div>
-        <div class="user">Người dùng hiện tại: <span id="userLogin">hung319</span></div>
-    </div>
-
     <div class="container">
         <div class="download-card">
             <h1>Tải ảnh NSFW</h1>
             <div class="input-group">
-                <label for="imageCount">Số lượng ảnh tải xuống:</label>
+                <label for="imageCount">Số lượng ảnh:</label>
                 <input type="number" id="imageCount" value="50" min="1">
             </div>
-            
             <div class="input-group">
                 <label for="apiSelector">Chọn API:</label>
                 <select id="apiSelector">
                     <option value="waifu.pics">Waifu.pics</option>
-                    <option value="konachan(questionable)">Konachan.net(questionable)</option>
-                    <option value="konachan(explicit)">Konachan.net(explicit)</option>
-                    <option value="yande.re(questionable)">Yande.re(questionable)</option>
-                    <option value="yande.re(explicit)">Yande.re(explicit)</option>
+                    <option value="konachan(questionable)">Konachan.net (questionable)</option>
+                    <option value="konachan(explicit)">Konachan.net (explicit)</option>
+                    <option value="yande.re(questionable)">Yande.re (questionable)</option>
+                    <option value="yande.re(explicit)">Yande.re (explicit)</option>
                 </select>
             </div>
-
-            <button id="downloadBtn">Tải ảnh và nén ZIP</button>
+            <button id="downloadBtn">Tải ảnh & Nén ZIP</button>
             <div class="loading" id="loadingAnimation"></div>
             <div id="status"></div>
         </div>
     </div>
 
     <script>
-        function updateDateTime() {
-            const now = new Date();
-            const options = { timeZone: "Asia/Ho_Chi_Minh", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false };
-            const formatter = new Intl.DateTimeFormat("vi-VN", options);
-            document.getElementById("currentDateTime").textContent = formatter.format(now).replace(",", "");
-        }
-        setInterval(updateDateTime, 1000);
-
-        const CONCURRENT_LIMIT = 1000000;
-
-        const PROXY_URL = 'https://proxy.h4rs.io.vn/cors?url=';
+        const API_PROXY_URL = 'https://proxy.h4rs.io.vn/cors?url=';
+        const IMAGE_PROXY_URL = 'https://proxy.h4rs.io.vn/image?url=';
         const API_URLS = {
             'waifu.pics': 'https://waifu.pics/api/nsfw/waifu',
-            // 'nekosapi.com': 'https://api.nekosapi.com/v4/images/random?rating=explicit&limit=1',
             'konachan(questionable)': 'https://konachan.net/post.json?tags=order:random+rating:questionable&limit=1',
             'konachan(explicit)': 'https://konachan.net/post.json?tags=order:random+rating:explicit&limit=1',
             'yande.re(questionable)': 'https://yande.re/post.json?tags=order:random+rating:questionable&limit=1',
             'yande.re(explicit)': 'https://yande.re/post.json?tags=order:random+rating:explicit&limit=1'
         };
 
-        const generateRandomString = (length) => Array.from({ length }, () => 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'.charAt(Math.floor(Math.random() * 62))).join('');
-
-        const fetchWithRetry = async (url, retries = 3) => {
+        const fetchWithRetry = async (url, proxyUrl, retries = 3) => {
             try {
-                const response = await fetch(`${PROXY_URL}${encodeURIComponent(url)}`);
+                const response = await fetch(`${proxyUrl}${encodeURIComponent(url)}`);
                 if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 return response;
             } catch (error) {
-                if (retries > 0) return fetchWithRetry(url, retries - 1);
+                if (retries > 0) return fetchWithRetry(url, proxyUrl, retries - 1);
                 return null;
             }
         };
 
         const fetchImage = async (retryCount = 3) => {
-    const selectedApi = document.getElementById('apiSelector').value;
-    const apiUrl = API_URLS[selectedApi];
-    try {
-        const response = await fetchWithRetry(apiUrl);
-        const data = await response.json();
+            const selectedApi = document.getElementById('apiSelector').value;
+            const apiUrl = API_URLS[selectedApi];
 
-        let imageUrl;
-        if (selectedApi === 'waifu.pics') {
-            imageUrl = data.url;
-        } /* else if (selectedApi === 'nekosapi.com') {
-             imageUrl = data[0]?.url; // Lấy URL từ phần tử đầu tiên trong mảng
-        }*/ else {
-            imageUrl = data[0]?.file_url;
-        }
+            try {
+                const response = await fetchWithRetry(apiUrl, API_PROXY_URL);
+                const data = await response.json();
 
-        if (!imageUrl) throw new Error("URL ảnh không xác định!");
+                let imageUrl;
+                if (selectedApi === 'waifu.pics') {
+                    imageUrl = data.url;
+                } else {
+                    imageUrl = data[0]?.file_url;
+                }
 
-        const imageResponse = await fetchWithRetry(`${PROXY_URL}${encodeURIComponent(imageUrl)}`);
-        const imageBlob = await imageResponse.blob();
-        const fileName = imageUrl.split('/').pop();
-        return { imageBlob, fileName };
-    } catch (error) {
-        if (retryCount > 0) return fetchImage(retryCount - 1);
-        return null;
-    }
-};
+                if (!imageUrl) throw new Error("URL ảnh không xác định!");
+
+                const proxiedImageUrl = `${IMAGE_PROXY_URL}${encodeURIComponent(imageUrl)}`;
+                const imageResponse = await fetchWithRetry(proxiedImageUrl, IMAGE_PROXY_URL);
+                const imageBlob = await imageResponse.blob();
+                const fileName = imageUrl.split('/').pop();
+                return { imageBlob, fileName };
+            } catch (error) {
+                if (retryCount > 0) return fetchImage(retryCount - 1);
+                return null;
+            }
+        };
+
         const downloadImages = async (count) => {
             const zip = new JSZip();
             let completed = 0;
             const promises = [];
+
             for (let i = 0; i < count; i++) {
-                if (promises.length >= CONCURRENT_LIMIT) {
-                    await Promise.all(promises);
-                    promises.length = 0;
-                }
                 promises.push(fetchImage().then(result => {
                     if (result && result.imageBlob) {
                         zip.file(result.fileName, result.imageBlob);
@@ -311,6 +187,7 @@
                     }
                 }));
             }
+
             await Promise.all(promises);
             return zip.generateAsync({ type: 'blob' });
         };
@@ -320,14 +197,14 @@
             const downloadBtn = document.getElementById('downloadBtn');
             const loadingAnimation = document.getElementById('loadingAnimation');
             const status = document.getElementById('status');
+
             downloadBtn.disabled = true;
             loadingAnimation.classList.add('active');
             status.textContent = 'Đang tải ảnh...';
 
             try {
                 const zipBlob = await downloadImages(imageCount);
-                const fileName = `images-${generateRandomString(6)}.zip`;
-                saveAs(zipBlob, fileName);
+                saveAs(zipBlob, `images-${Date.now()}.zip`);
                 status.textContent = 'Tải về hoàn tất!';
             } catch (error) {
                 status.textContent = 'Lỗi khi tải ảnh!';
