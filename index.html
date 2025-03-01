@@ -13,13 +13,7 @@
             --background-color: #f0f8ff;
             --card-background: white;
         }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Arial, sans-serif;
             background-color: var(--background-color);
@@ -27,105 +21,79 @@
             line-height: 1.6;
             padding-top: 20px;
         }
-
-        .container {
-            max-width: 800px;
-            margin: 60px auto 20px;
-            padding: 20px;
-        }
-
-        .download-card {
-            background-color: var(--card-background);
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            margin: 20px auto;
-        }
-
-        h1 {
-            color: var(--primary-color);
-            text-align: center;
-        }
-
-        .input-group {
-            margin: 20px 0;
-            text-align: center;
-        }
-
-        input, select, button {
-            font-size: 16px;
-            padding: 12px;
-            border-radius: 8px;
-            border: 2px solid #ddd;
-            width: 200px;
-            display: block;
-            margin: 10px auto;
-            text-align: center;
-        }
-
-        button {
+        .top-info {
             background-color: var(--primary-color);
             color: white;
-            cursor: pointer;
+            padding: 10px;
+            position: fixed; top: 0; left: 0; right: 0;
+            display: flex; justify-content: space-between; align-items: center;
+            font-size: 0.9em; z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
-
-        button:hover {
-            background-color: var(--hover-color);
-        }
-
-        button:disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
-        }
-
-        .loading {
-            display: none;
+        .container { max-width: 800px; margin: 60px auto 20px; padding: 20px; }
+        .download-card {
+            background-color: var(--card-background);
+            border-radius: 15px; padding: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             margin: 20px auto;
-            width: 50px;
-            height: 50px;
-            border: 5px solid #f3f3f3;
-            border-top: 5px solid var(--primary-color);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
+            transition: transform 0.3s ease;
         }
-
-        .loading.active {
-            display: block;
+        .download-card:hover { transform: translateY(-5px); }
+        h1 { color: var(--primary-color); text-align: center; }
+        .input-group { margin: 20px 0; text-align: center; }
+        label { font-weight: 500; display: block; margin-bottom: 10px; }
+        input, select {
+            font-size: 16px; padding: 12px; border-radius: 8px;
+            border: 2px solid #ddd; background-color: white;
+            transition: all 0.3s ease; text-align: center;
         }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        input[type="number"] { width: 150px; }
+        button {
+            background-color: var(--primary-color);
+            color: white; border: none; border-radius: 8px;
+            padding: 12px 30px; font-size: 16px;
+            cursor: pointer; transition: all 0.3s ease;
+            display: block; margin: 20px auto;
         }
+        button:hover { background-color: var(--hover-color); transform: translateY(-2px); }
+        button:disabled { background-color: #cccccc; cursor: not-allowed; }
+        .loading { display: none; width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid var(--primary-color); border-radius: 50%; animation: spin 1s linear infinite; margin: 20px auto; }
+        .loading.active { display: block; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
+    <div class="top-info">
+        <div class="datetime">Ngày giờ hiện tại: <span id="currentDateTime"></span></div>
+        <div class="user">Người dùng: <span id="userLogin">hung319</span></div>
+    </div>
     <div class="container">
         <div class="download-card">
             <h1>Tải ảnh NSFW</h1>
             <div class="input-group">
-                <label for="imageCount">Số lượng ảnh:</label>
+                <label for="imageCount">Số lượng ảnh tải xuống:</label>
                 <input type="number" id="imageCount" value="50" min="1">
             </div>
             <div class="input-group">
                 <label for="apiSelector">Chọn API:</label>
                 <select id="apiSelector">
                     <option value="waifu.pics">Waifu.pics</option>
-                    <option value="konachan(questionable)">Konachan.net (questionable)</option>
-                    <option value="konachan(explicit)">Konachan.net (explicit)</option>
-                    <option value="yande.re(questionable)">Yande.re (questionable)</option>
-                    <option value="yande.re(explicit)">Yande.re (explicit)</option>
+                    <option value="konachan(questionable)">Konachan (Q)</option>
+                    <option value="konachan(explicit)">Konachan (E)</option>
+                    <option value="yande.re(questionable)">Yande.re (Q)</option>
+                    <option value="yande.re(explicit)">Yande.re (E)</option>
                 </select>
             </div>
-            <button id="downloadBtn">Tải ảnh & Nén ZIP</button>
+            <button id="downloadBtn">Tải ảnh và nén ZIP</button>
             <div class="loading" id="loadingAnimation"></div>
             <div id="status"></div>
         </div>
     </div>
 
     <script>
-        const API_PROXY_URL = 'https://proxy.h4rs.io.vn/cors?url=';
-        const IMAGE_PROXY_URL = 'https://proxy.h4rs.io.vn/image?url=';
+        const PROXY_API = 'https://proxy.h4rs.io.vn/cors?url=';
+        const IMAGE_PROXY = 'https://empty-feather-66cf.hoangxg4.workers.dev/?url=';
+
         const API_URLS = {
             'waifu.pics': 'https://waifu.pics/api/nsfw/waifu',
             'konachan(questionable)': 'https://konachan.net/post.json?tags=order:random+rating:questionable&limit=1',
@@ -134,13 +102,13 @@
             'yande.re(explicit)': 'https://yande.re/post.json?tags=order:random+rating:explicit&limit=1'
         };
 
-        const fetchWithRetry = async (url, proxyUrl, retries = 3) => {
+        const fetchWithRetry = async (url, retries = 3) => {
             try {
-                const response = await fetch(`${proxyUrl}${encodeURIComponent(url)}`);
+                const response = await fetch(`${PROXY_API}${encodeURIComponent(url)}`);
                 if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 return response;
             } catch (error) {
-                if (retries > 0) return fetchWithRetry(url, proxyUrl, retries - 1);
+                if (retries > 0) return fetchWithRetry(url, retries - 1);
                 return null;
             }
         };
@@ -148,22 +116,15 @@
         const fetchImage = async (retryCount = 3) => {
             const selectedApi = document.getElementById('apiSelector').value;
             const apiUrl = API_URLS[selectedApi];
-
             try {
-                const response = await fetchWithRetry(apiUrl, API_PROXY_URL);
+                const response = await fetchWithRetry(apiUrl);
                 const data = await response.json();
 
-                let imageUrl;
-                if (selectedApi === 'waifu.pics') {
-                    imageUrl = data.url;
-                } else {
-                    imageUrl = data[0]?.file_url;
-                }
-
+                let imageUrl = selectedApi === 'waifu.pics' ? data.url : data[0]?.file_url;
                 if (!imageUrl) throw new Error("URL ảnh không xác định!");
 
-                const proxiedImageUrl = `${IMAGE_PROXY_URL}${encodeURIComponent(imageUrl)}`;
-                const imageResponse = await fetchWithRetry(proxiedImageUrl, IMAGE_PROXY_URL);
+                const proxiedImageUrl = `${IMAGE_PROXY}${encodeURIComponent(imageUrl)}`;
+                const imageResponse = await fetch(proxiedImageUrl);
                 const imageBlob = await imageResponse.blob();
                 const fileName = imageUrl.split('/').pop();
                 return { imageBlob, fileName };
@@ -173,45 +134,24 @@
             }
         };
 
-        const downloadImages = async (count) => {
+        document.getElementById('downloadBtn').addEventListener('click', async () => {
+            const count = Math.max(parseInt(document.getElementById('imageCount').value), 1);
             const zip = new JSZip();
             let completed = 0;
-            const promises = [];
+            document.getElementById('downloadBtn').disabled = true;
+            document.getElementById('loadingAnimation').classList.add('active');
 
             for (let i = 0; i < count; i++) {
-                promises.push(fetchImage().then(result => {
-                    if (result && result.imageBlob) {
-                        zip.file(result.fileName, result.imageBlob);
-                        completed++;
-                        document.getElementById('status').textContent = `Đã tải ${completed}/${count} ảnh`;
-                    }
-                }));
+                const result = await fetchImage();
+                if (result) {
+                    zip.file(result.fileName, result.imageBlob);
+                    document.getElementById('status').textContent = `Đã tải ${++completed}/${count} ảnh`;
+                }
             }
 
-            await Promise.all(promises);
-            return zip.generateAsync({ type: 'blob' });
-        };
-
-        document.getElementById('downloadBtn').addEventListener('click', async () => {
-            const imageCount = Math.max(parseInt(document.getElementById('imageCount').value), 1);
-            const downloadBtn = document.getElementById('downloadBtn');
-            const loadingAnimation = document.getElementById('loadingAnimation');
-            const status = document.getElementById('status');
-
-            downloadBtn.disabled = true;
-            loadingAnimation.classList.add('active');
-            status.textContent = 'Đang tải ảnh...';
-
-            try {
-                const zipBlob = await downloadImages(imageCount);
-                saveAs(zipBlob, `images-${Date.now()}.zip`);
-                status.textContent = 'Tải về hoàn tất!';
-            } catch (error) {
-                status.textContent = 'Lỗi khi tải ảnh!';
-            } finally {
-                downloadBtn.disabled = false;
-                loadingAnimation.classList.remove('active');
-            }
+            zip.generateAsync({ type: 'blob' }).then(blob => saveAs(blob, `images.zip`));
+            document.getElementById('downloadBtn').disabled = false;
+            document.getElementById('loadingAnimation').classList.remove('active');
         });
     </script>
 </body>
