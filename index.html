@@ -13,7 +13,13 @@
             --background-color: #f0f8ff;
             --card-background: white;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Segoe UI', Arial, sans-serif;
             background-color: var(--background-color);
@@ -21,52 +27,187 @@
             line-height: 1.6;
             padding-top: 20px;
         }
+
         .top-info {
             background-color: var(--primary-color);
             color: white;
             padding: 10px;
-            position: fixed; top: 0; left: 0; right: 0;
-            display: flex; justify-content: space-between; align-items: center;
-            font-size: 0.9em; z-index: 1000;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9em;
+            z-index: 1000;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
-        .container { max-width: 800px; margin: 60px auto 20px; padding: 20px; }
+
+        .container {
+            max-width: 800px;
+            margin: 60px auto 20px;
+            padding: 20px;
+        }
+
         .download-card {
             background-color: var(--card-background);
-            border-radius: 15px; padding: 30px;
+            border-radius: 15px;
+            padding: 30px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             margin: 20px auto;
             transition: transform 0.3s ease;
         }
-        .download-card:hover { transform: translateY(-5px); }
-        h1 { color: var(--primary-color); text-align: center; }
-        .input-group { margin: 20px 0; text-align: center; }
-        label { font-weight: 500; display: block; margin-bottom: 10px; }
-        input, select {
-            font-size: 16px; padding: 12px; border-radius: 8px;
-            border: 2px solid #ddd; background-color: white;
-            transition: all 0.3s ease; text-align: center;
+
+        .download-card:hover {
+            transform: translateY(-5px);
         }
-        input[type="number"] { width: 150px; }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            font-size: 2.2em;
+            text-align: center;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-group {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        label {
+            font-weight: 500;
+            color: #444;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        input[type="number"] {
+            font-size: 16px;
+            padding: 12px 20px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            width: 150px;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.2);
+        }
+
         button {
             background-color: var(--primary-color);
-            color: white; border: none; border-radius: 8px;
-            padding: 12px 30px; font-size: 16px;
-            cursor: pointer; transition: all 0.3s ease;
-            display: block; margin: 20px auto;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            display: block;
+            margin: 20px auto;
+            min-width: 200px;
         }
-        button:hover { background-color: var(--hover-color); transform: translateY(-2px); }
-        button:disabled { background-color: #cccccc; cursor: not-allowed; }
-        .loading { display: none; width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid var(--primary-color); border-radius: 50%; animation: spin 1s linear infinite; margin: 20px auto; }
-        .loading.active { display: block; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        button:hover {
+            background-color: var(--hover-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        #status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: rgba(26, 115, 232, 0.1);
+            color: var(--primary-color);
+            font-weight: 500;
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .loading {
+            display: none;
+            margin: 20px auto;
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .input-group {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        select {
+            font-size: 16px;
+            padding: 12px;
+            border-radius: 8px;
+            border: 2px solid #ddd;
+            background-color: white;
+            width: 200px;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            display: inline-block;
+            text-align: center;
+        }
+
+        option {
+            text-align: center;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.2);
+        }
     </style>
 </head>
 <body>
     <div class="top-info">
-        <div class="datetime">Ngày giờ hiện tại: <span id="currentDateTime"></span></div>
-        <div class="user">Người dùng: <span id="userLogin">hung319</span></div>
+        <div class="datetime">Ngày giờ hiện tại (Hồ Chí Minh): <span id="currentDateTime"></span></div>
+        <div class="user">Người dùng hiện tại: <span id="userLogin">hung319</span></div>
     </div>
+
     <div class="container">
         <div class="download-card">
             <h1>Tải ảnh NSFW</h1>
@@ -74,16 +215,18 @@
                 <label for="imageCount">Số lượng ảnh tải xuống:</label>
                 <input type="number" id="imageCount" value="50" min="1">
             </div>
+            
             <div class="input-group">
                 <label for="apiSelector">Chọn API:</label>
                 <select id="apiSelector">
                     <option value="waifu.pics">Waifu.pics</option>
-                    <option value="konachan(questionable)">Konachan (Q)</option>
-                    <option value="konachan(explicit)">Konachan (E)</option>
-                    <option value="yande.re(questionable)">Yande.re (Q)</option>
-                    <option value="yande.re(explicit)">Yande.re (E)</option>
+                    <option value="konachan(questionable)">Konachan.net(questionable)</option>
+                    <option value="konachan(explicit)">Konachan.net(explicit)</option>
+                    <option value="yande.re(questionable)">Yande.re(questionable)</option>
+                    <option value="yande.re(explicit)">Yande.re(explicit)</option>
                 </select>
             </div>
+
             <button id="downloadBtn">Tải ảnh và nén ZIP</button>
             <div class="loading" id="loadingAnimation"></div>
             <div id="status"></div>
@@ -91,20 +234,31 @@
     </div>
 
     <script>
-        const PROXY_API = 'https://proxy.h4rs.io.vn/cors?url=';
-        const IMAGE_PROXY = 'https://empty-feather-66cf.hoangxg4.workers.dev/?url=';
+        function updateDateTime() {
+            const now = new Date();
+            const options = { timeZone: "Asia/Ho_Chi_Minh", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false };
+            const formatter = new Intl.DateTimeFormat("vi-VN", options);
+            document.getElementById("currentDateTime").textContent = formatter.format(now).replace(",", "");
+        }
+        setInterval(updateDateTime, 1000);
 
+        const CONCURRENT_LIMIT = 1000000;
+
+        const PROXY_URL = 'https://proxy.h4rs.io.vn/cors?url=';
         const API_URLS = {
             'waifu.pics': 'https://waifu.pics/api/nsfw/waifu',
+            // 'nekosapi.com': 'https://api.nekosapi.com/v4/images/random?rating=explicit&limit=1',
             'konachan(questionable)': 'https://konachan.net/post.json?tags=order:random+rating:questionable&limit=1',
             'konachan(explicit)': 'https://konachan.net/post.json?tags=order:random+rating:explicit&limit=1',
             'yande.re(questionable)': 'https://yande.re/post.json?tags=order:random+rating:questionable&limit=1',
             'yande.re(explicit)': 'https://yande.re/post.json?tags=order:random+rating:explicit&limit=1'
         };
 
+        const generateRandomString = (length) => Array.from({ length }, () => 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'.charAt(Math.floor(Math.random() * 62))).join('');
+
         const fetchWithRetry = async (url, retries = 3) => {
             try {
-                const response = await fetch(`${PROXY_API}${encodeURIComponent(url)}`);
+                const response = await fetch(`${PROXY_URL}${encodeURIComponent(url)}`);
                 if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 return response;
             } catch (error) {
@@ -113,45 +267,77 @@
             }
         };
 
-        const fetchImage = async (retryCount = 3) => {
-            const selectedApi = document.getElementById('apiSelector').value;
-            const apiUrl = API_URLS[selectedApi];
-            try {
-                const response = await fetchWithRetry(apiUrl);
-                const data = await response.json();
+        const IMAGE_PROXY_URL = 'https://empty-feather-66cf.hoangxg4.workers.dev/?url=';
 
-                let imageUrl = selectedApi === 'waifu.pics' ? data.url : data[0]?.file_url;
-                if (!imageUrl) throw new Error("URL ảnh không xác định!");
+const fetchImage = async (retryCount = 3) => {
+    const selectedApi = document.getElementById('apiSelector').value;
+    const apiUrl = API_URLS[selectedApi];
+    try {
+        const response = await fetchWithRetry(apiUrl);
+        const data = await response.json();
 
-                const proxiedImageUrl = `${IMAGE_PROXY}${encodeURIComponent(imageUrl)}`;
-                const imageResponse = await fetch(proxiedImageUrl);
-                const imageBlob = await imageResponse.blob();
-                const fileName = imageUrl.split('/').pop();
-                return { imageBlob, fileName };
-            } catch (error) {
-                if (retryCount > 0) return fetchImage(retryCount - 1);
-                return null;
+        let imageUrl;
+        if (selectedApi === 'waifu.pics') {
+            imageUrl = data.url;
+        } else {
+            imageUrl = data[0]?.file_url;
+        }
+
+        if (!imageUrl) throw new Error("URL ảnh không xác định!");
+
+        // Thêm proxy Cloudflare vào ảnh trước khi tải về
+        const proxiedImageUrl = `${IMAGE_PROXY_URL}${encodeURIComponent(imageUrl)}`;
+
+        const imageResponse = await fetchWithRetry(proxiedImageUrl);
+        const imageBlob = await imageResponse.blob();
+        const fileName = imageUrl.split('/').pop();
+        return { imageBlob, fileName };
+    } catch (error) {
+        if (retryCount > 0) return fetchImage(retryCount - 1);
+        return null;
+    }
+};
+        const downloadImages = async (count) => {
+            const zip = new JSZip();
+            let completed = 0;
+            const promises = [];
+            for (let i = 0; i < count; i++) {
+                if (promises.length >= CONCURRENT_LIMIT) {
+                    await Promise.all(promises);
+                    promises.length = 0;
+                }
+                promises.push(fetchImage().then(result => {
+                    if (result && result.imageBlob) {
+                        zip.file(result.fileName, result.imageBlob);
+                        completed++;
+                        document.getElementById('status').textContent = `Đã tải ${completed}/${count} ảnh`;
+                    }
+                }));
             }
+            await Promise.all(promises);
+            return zip.generateAsync({ type: 'blob' });
         };
 
         document.getElementById('downloadBtn').addEventListener('click', async () => {
-            const count = Math.max(parseInt(document.getElementById('imageCount').value), 1);
-            const zip = new JSZip();
-            let completed = 0;
-            document.getElementById('downloadBtn').disabled = true;
-            document.getElementById('loadingAnimation').classList.add('active');
+            const imageCount = Math.max(parseInt(document.getElementById('imageCount').value), 1);
+            const downloadBtn = document.getElementById('downloadBtn');
+            const loadingAnimation = document.getElementById('loadingAnimation');
+            const status = document.getElementById('status');
+            downloadBtn.disabled = true;
+            loadingAnimation.classList.add('active');
+            status.textContent = 'Đang tải ảnh...';
 
-            for (let i = 0; i < count; i++) {
-                const result = await fetchImage();
-                if (result) {
-                    zip.file(result.fileName, result.imageBlob);
-                    document.getElementById('status').textContent = `Đã tải ${++completed}/${count} ảnh`;
-                }
+            try {
+                const zipBlob = await downloadImages(imageCount);
+                const fileName = `images-${generateRandomString(6)}.zip`;
+                saveAs(zipBlob, fileName);
+                status.textContent = 'Tải về hoàn tất!';
+            } catch (error) {
+                status.textContent = 'Lỗi khi tải ảnh!';
+            } finally {
+                downloadBtn.disabled = false;
+                loadingAnimation.classList.remove('active');
             }
-
-            zip.generateAsync({ type: 'blob' }).then(blob => saveAs(blob, `images.zip`));
-            document.getElementById('downloadBtn').disabled = false;
-            document.getElementById('loadingAnimation').classList.remove('active');
         });
     </script>
 </body>
