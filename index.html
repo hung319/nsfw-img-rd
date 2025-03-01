@@ -285,7 +285,7 @@
 
         if (!imageUrl) throw new Error("URL ảnh không xác định!");
 
-        const imageResponse = await fetchWithRetry(imageUrl);
+        const imageResponse = await fetchWithRetry(`${PROXY_URL}${encodeURIComponent(imageUrl)}`);
         const imageBlob = await imageResponse.blob();
         const fileName = imageUrl.split('/').pop();
         return { imageBlob, fileName };
