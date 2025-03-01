@@ -267,9 +267,7 @@
             }
         };
 
-        const IMAGE_PROXY_URL = 'https://empty-feather-66cf.hoangxg4.workers.dev/?url=';
-
-const fetchImage = async (retryCount = 3) => {
+        const fetchImage = async (retryCount = 3) => {
     const selectedApi = document.getElementById('apiSelector').value;
     const apiUrl = API_URLS[selectedApi];
     try {
@@ -279,16 +277,15 @@ const fetchImage = async (retryCount = 3) => {
         let imageUrl;
         if (selectedApi === 'waifu.pics') {
             imageUrl = data.url;
-        } else {
+        } /* else if (selectedApi === 'nekosapi.com') {
+             imageUrl = data[0]?.url; // Lấy URL từ phần tử đầu tiên trong mảng
+        }*/ else {
             imageUrl = data[0]?.file_url;
         }
 
         if (!imageUrl) throw new Error("URL ảnh không xác định!");
 
-        // Thêm proxy Cloudflare vào ảnh trước khi tải về
-        const proxiedImageUrl = `${IMAGE_PROXY_URL}${encodeURIComponent(imageUrl)}`;
-
-        const imageResponse = await fetchWithRetry(proxiedImageUrl);
+        const imageResponse = await fetchWithRetry(imageUrl);
         const imageBlob = await imageResponse.blob();
         const fileName = imageUrl.split('/').pop();
         return { imageBlob, fileName };
